@@ -2,6 +2,7 @@ import math
 import random
 
 from Algorithm import Algorithm
+from functions import should_stop
 from particle import Particle
 
 
@@ -46,10 +47,8 @@ class ParticleSwarm(Algorithm):
             solution = max(current_iteration_solution, solution)
 
             # check stop criterion
-            if self.stop_criterion == "iterations" and iteration > 250:
-                iteration += 1
-                break
-            elif self.stop_criterion == "delta" and diff < 0.02:
+            iteration += 1
+            if should_stop(iteration, diff, self.stop_criterion, self.MAX_ITERATIONS, self.DELTA):
                 break
 
         return solution
@@ -66,3 +65,14 @@ class ParticleSwarm(Algorithm):
         self.inertion = inertion
         self.social_constant = social_constant
         self.cognitive_constant = cognitive_constant
+
+    def should_stop(self, iteration: int, diff: float) -> bool:
+        if self.stop_criterion == "iterations":
+            if iteration >= self.MAX_ITERATIONS:
+                print(f"Total iterations: {iteration}")
+                return True
+        elif self.stop_criterion == "delta":
+            if diff < self.DELTA and iteration >= 10:
+                print(f"Total iterations: {iteration}")
+                return True
+        return False

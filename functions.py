@@ -12,3 +12,16 @@ def function_two(x: float, y: float) -> float:
 # Himmelblau function
 def function_three(x: float, y: float) -> float:
     return -((x ** 2 + y - 11) ** 2 + (x + y ** 2 - 7) ** 2)
+
+
+def should_stop(iteration: int, diff: float, stop_criterion: str, max_iterations, delta) -> bool:
+    if stop_criterion == "iterations":
+        if iteration >= max_iterations:
+            print(f"Total iterations: {iteration}")
+            return True
+    elif stop_criterion == "delta":
+        if diff < delta and iteration >= 10:
+            print(f"Total iterations: {iteration}")
+            return True
+    return False
+

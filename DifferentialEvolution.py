@@ -3,6 +3,7 @@ import random
 import math
 
 from Algorithm import Algorithm
+from functions import should_stop
 
 
 class DifferentialEvolution(Algorithm):
@@ -41,10 +42,8 @@ class DifferentialEvolution(Algorithm):
             solution = max(tmp_best_solution, solution)
 
             # check stop criterion
-            if self.stop_criterion == "iterations" and iteration > 250:
-                iteration += 1
-                break
-            elif self.stop_criterion == "delta" and diff < 0.02:
+            iteration += 1
+            if should_stop(iteration, diff, self.stop_criterion, self.MAX_ITERATIONS, self.DELTA):
                 break
 
         # get best score
@@ -55,3 +54,4 @@ class DifferentialEvolution(Algorithm):
         self.F = F
         self.pop_size = pop_size
         self.CR = CR
+

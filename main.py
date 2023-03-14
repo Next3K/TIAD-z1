@@ -12,16 +12,26 @@ from functions import function_three
 # choose algorithm
 def get_algorithm(choice: int, stop_criterion: str):
     if choice == 1:
-        f, pop_size, cr = input("Provide DE parameters: 1) F 2) Population size 3) CR ").split()
-        return DifferentialEvolution(stop_criterion, F=f, pop_size=pop_size, CR=cr)
+        print("Chosen algorithm: DE")
+        answer = input("Do you want to provide parameters? (y/n)")
+        if answer == "y":
+            f, pop_size, cr = input("Provide DE parameters: 1) F 2) Population size 3) CR ").split()
+            return DifferentialEvolution(stop_criterion, F=float(f), pop_size=int(pop_size), CR=float(cr))
+        else:
+            return DifferentialEvolution(stop_criterion)
     elif choice == 2:
-        swarm_size, inertion, social_constant, cognitive_constant, y = input(
-            "Provide PSO parameters: 1) swarm size 2) inertion 3) social constant 4) cognitive constant ").split()
-        return ParticleSwarm(stop_criterion,
-                             swarm_size=swarm_size,
-                             inertion=inertion,
-                             social_constant=social_constant,
-                             cognitive_constant=cognitive_constant)
+        print("Chosen algorithm: PSO")
+        answer = input("Do you want to provide parameters? (y/n)")
+        if answer == "y":
+            swarm_size, inertion, social_constant, cognitive_constant = input(
+                "Provide PSO parameters: 1) swarm size 2) inertion 3) social constant 4) cognitive constant ").split()
+            return ParticleSwarm(stop_criterion,
+                                 swarm_size=int(swarm_size),
+                                 inertion=float(inertion),
+                                 social_constant=float(social_constant),
+                                 cognitive_constant=float(cognitive_constant))
+        else:
+            return ParticleSwarm(stop_criterion)
     else:
         raise Exception("Invalid algorithm numer")
 
@@ -64,4 +74,10 @@ if __name__ == '__main__':
     algorithm: Algorithm = get_algorithm(algorithm_choice, stop_criterion_name)
     function = get_function(reward_function_choice)
 
-    conductor = Conductor(30, algorithm, function, -1, 1, -1, 1)
+    conductor = Conductor(30, algorithm, function, -5, 5, -5, 5)
+
+    print(
+        f"Best solution: {conductor.best_solution},"
+        f" avg solution: {conductor.average_solution},"
+        f" part success: {conductor.part_successful},"
+        f" standard deviation: {conductor.standard_deviation}")
