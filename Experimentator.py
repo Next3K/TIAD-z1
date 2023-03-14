@@ -16,7 +16,7 @@ class Conductor:
         # conduct experiments
         for i in range(N):
             solution: float = algorithm.find_solution(function, min_x, max_x, min_y, max_y)
-            if solution is not None:
+            if solution is not None and solution is not -math.inf and solution is not math.inf:
                 self.solutions.append(solution)
 
         self.best_solution = max(self.solutions)

@@ -10,9 +10,10 @@ class DifferentialEvolution(Algorithm):
     def find_solution(self, function, min_x: float, max_x: float, min_y: float, max_y: float) -> float:
 
         solution = -math.inf
-        population: [[float]] = [[uniform(min_x, max_x), uniform(min_y, max_y)] in range(self.pop_size)]
+        population: [[float]] = [[uniform(min_x, max_x), uniform(min_y, max_y)] for _ in range(self.pop_size)]
+        iteration = 0
 
-        for iteration in range(100):
+        while True:
             mutants = []
             # mutation
             for _ in population:
@@ -41,11 +42,10 @@ class DifferentialEvolution(Algorithm):
 
             # check stop criterion
             if self.stop_criterion == "iterations" and iteration > 250:
+                iteration += 1
                 break
             elif self.stop_criterion == "delta" and diff < 0.02:
                 break
-            else:
-                continue
 
         # get best score
         return solution

@@ -12,11 +12,16 @@ from functions import function_three
 # choose algorithm
 def get_algorithm(choice: int, stop_criterion: str):
     if choice == 1:
-        x, y = input("Provide DE parameters: 1) Pop size ").split()
-        return DifferentialEvolution(x, y, stop_criterion)
+        f, pop_size, cr = input("Provide DE parameters: 1) F 2) Population size 3) CR ").split()
+        return DifferentialEvolution(stop_criterion, F=f, pop_size=pop_size, CR=cr)
     elif choice == 2:
-        x, y = input("Provide PSO parameters: 1) Pop size ").split()
-        return ParticleSwarm(x, y, stop_criterion)
+        swarm_size, inertion, social_constant, cognitive_constant, y = input(
+            "Provide PSO parameters: 1) swarm size 2) inertion 3) social constant 4) cognitive constant ").split()
+        return ParticleSwarm(stop_criterion,
+                             swarm_size=swarm_size,
+                             inertion=inertion,
+                             social_constant=social_constant,
+                             cognitive_constant=cognitive_constant)
     else:
         raise Exception("Invalid algorithm numer")
 
