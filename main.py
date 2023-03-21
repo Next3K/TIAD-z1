@@ -15,7 +15,6 @@ def print_chart(data: [[float]], name: str):
     plt.title(f"Graph for {name}")
     for i in range(len(y[0])):
         plt.plot(x, [pt[i] for pt in y])
-    plt.legend()
     plt.show()
 
 
