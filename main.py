@@ -8,8 +8,8 @@ from StopCriterion import StopCriterion
 if __name__ == '__main__':
     print('Program is starting!')
 
-    stop_criterion = StopCriterion("iterations")
-    function = functions.LeeYao()
+    function = functions.Ackley()
+    stop_criterion = StopCriterion("iterations", delta=function.accuracy)
 
     # DE parameters
     f = 0.5
