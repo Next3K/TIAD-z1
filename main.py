@@ -9,7 +9,8 @@ if __name__ == '__main__':
     print('Program is starting!')
 
     function = functions.Ackley()
-    stop_criterion = StopCriterion("iterations", delta=function.accuracy)
+    stop_criterion_iterations = StopCriterion("iterations")
+    stop_criterion_delta = StopCriterion("iterations", delta=function.accuracy)
 
     # DE parameters
     f = 0.5
@@ -22,8 +23,12 @@ if __name__ == '__main__':
     social_constant: float = 2
     cognitive_constant: float = 1.2
 
-    algorithm_de: Algorithm = DifferentialEvolution(stop_criterion, f, pop_size, cr)
-    algorithm_pso: Algorithm = ParticleSwarm(stop_criterion, swarm_size, inertion, social_constant, cognitive_constant)
+    algorithm_de: Algorithm = DifferentialEvolution(stop_criterion_iterations, f, pop_size, cr)
+    algorithm_pso: Algorithm = ParticleSwarm(stop_criterion_iterations,
+                                             swarm_size,
+                                             inertion,
+                                             social_constant,
+                                             cognitive_constant)
 
     conductor_pso = Conductor(30, algorithm_pso, function)
     conductor_de = Conductor(30, algorithm_de, function)

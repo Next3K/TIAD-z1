@@ -36,7 +36,7 @@ class FunctionTwo(Equation):
 
         total = 0
         for i in range(self.dimensions):
-            total += ((x[i] - i) * (x[i] - i))
+            total += (x[i] - i)**2
         return total
 
     def __init__(self, minimum: float = -100, maximum: float = 100, dimensions: int = 20, accuracy: float = 0.0001):
@@ -79,7 +79,7 @@ class Rastrigin(Equation):
             raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
 
         total = 0
-        for i in range(self.dimensions - 1):
+        for i in range(self.dimensions):
             total += (x[i] ** 2 - 10 * math.cos(2 * math.pi * x[i]) + 10)
         return total
 
@@ -108,7 +108,7 @@ class Easom(Equation):
     def calculate(self, x: [float]) -> float:
         if len(x) != self.dimensions:
             raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
-        return -math.cos(x[0]) * math.cos(x[1]) * math.exp(-math.pow(x[0] - math.pi, 2) - math.pow(x[1] - math.pi, 2))
+        return -math.cos(x[0]) * math.cos(x[1]) * math.exp(-(x[0] - math.pi)**2 - (x[1] - math.pi)**2)
 
     def __init__(self, minimum: float = -10, maximum: float = 10, dimensions: int = 2, accuracy: float = 0.000001):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
