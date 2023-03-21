@@ -1,17 +1,197 @@
-# Goldstein–Price function
-def function_one(x: float, y: float) -> float:
-    return -((1 + (x + y + 1) ** 2 * (19 - 14 * x + 3 * x ** 2 - 14 * y + 6 * x * y + 3 * y ** 2)) *
-             (30 + (2 * x - 3 * y) ** 2 * (18 - 32 * x + 12 * x ** 2 + 48 * y - 36 * x * y + 27 * y ** 2)))
+import math
+from abc import ABC, abstractmethod
 
 
-# Booth function
-def function_two(x: float, y: float) -> float:
-    return -((x + 2 * y - 7) ** 2 + (2 * x + y - 5) ** 2)
+class Equation(ABC):
+    def __init__(self, minimum: float, maximum: float, dimensions: int):
+        self.min = minimum
+        self.min = maximum
+        self.dimensions = dimensions
+
+    @abstractmethod
+    def calculate(self, x: [float]) -> float:
+        pass
 
 
-# Himmelblau function
-def function_three(x: float, y: float) -> float:
-    return -((x ** 2 + y - 11) ** 2 + (x + y ** 2 - 7) ** 2)
+class Sphere(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+
+        total = 0
+        for i in range(self.dimensions):
+            total += x[i] * x[i]
+
+        return total
+
+    def __init__(self, minimum: float = 100, maximum: float = 100, dimensions: int = 20):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+class FunctionTwo(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+
+        total = 0
+        for i in range(self.dimensions):
+            total += ((x[i] - i) * (x[i] - i))
+        return total
+
+    def __init__(self, minimum: float = -100, maximum: float = 100, dimensions: int = 20):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+class Rosenbrock(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+
+        total = 0
+        for i in range(self.dimensions - 1):
+            total += (100 * (x[i + 1] - x[i] ** 2) ** 2 + (x[i] - 1) ** 2)
+        return total
+
+    def __init__(self, minimum: float = -2.048, maximum: float = 2.048, dimensions: int = 20):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+class Griewank(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+
+        one = 0
+        two = 1
+        for i in range(self.dimensions):
+            one += x[i] ** 2
+            two *= math.cos(float(x[i]) / math.sqrt(i))
+        return 1 + (float(one) / 4000.0) - float(two)
+
+    def __init__(self, minimum: float = 600, maximum: float = 600, dimensions: int = 20):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+class Rastrigin(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+
+        total = 0
+        for i in range(self.dimensions - 1):
+            total += (x[i] ** 2 - 10 * math.cos(2 * math.pi * x[i]) + 10)
+        return total
+
+    def __init__(self, minimum: float = -5.12, maximum: float = 5.12, dimensions: int = 20):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+class Ackley(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+
+        n = self.dimensions
+        one = 0
+        two = 0
+        for i in range(n):
+            one += (x[i] ** 2)
+            two += (math.cos(2 * math.pi * x[i]))
+        return -20 * math.exp(-0.2 * math.sqrt(one / n)) - math.exp(two / n) + 20 + math.e
+
+    def __init__(self, minimum: float = -32, maximum: float = 32, dimensions: int = 20):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+class Easom(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+        return -math.cos(x[0]) * math.cos(x[1]) * math.exp(-math.pow(x[0] - math.pi, 2) - math.pow(x[1] - math.pi, 2))
+
+    def __init__(self, minimum: float = -10, maximum: float = 10, dimensions: int = 2):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+class Brown(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+
+        total = 0
+        for i in range(self.dimensions - 1):
+            total += math.pow(x[i] ** 2, x[i + 1] ** 2 + 1) + math.pow(x[i + 1] ** 2, x[i] ** 2 + 1)
+        return total
+
+    def __init__(self, minimum: float = -1, maximum: float = 4, dimensions: int = 20):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+class Schwefel(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+
+        n = self.dimensions
+        one = 0
+        two = 1
+        for i in range(n):
+            one += (x[i] ** 2)
+            two *= abs(x[i])
+        return one + two
+
+    def __init__(self, minimum: float = -10, maximum: float = 10, dimensions: int = 20):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+class Zakharov(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+
+        n = self.dimensions
+        one = 0
+        two = 0
+        for i in range(n):
+            one += x[i]
+            two += i * x[i] / 2
+        return -one + math.pow(two, 2) + math.pow(two, 4)
+
+    def __init__(self, minimum: float = -10, maximum: float = 10, dimensions: int = 20):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+# not implemented
+class SchafferSixteen(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+        return 0
+
+    def __init__(self, minimum: float = -100, maximum: float = 100, dimensions: int = 2):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+# not implemented
+class LeeYao(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+        return 0
+
+    def __init__(self, minimum: float = -10, maximum: float = 10, dimensions: int = 20):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
+
+
+# not implemented
+class Corana(Equation):
+    def calculate(self, x: [float]) -> float:
+        if len(x) != self.dimensions:
+            raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
+        return 0
+
+    def __init__(self, minimum: float = -1000, maximum: float = 1000, dimensions: int = 4):
+        super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions)
 
 
 def should_stop(iteration: int, diff: float, stop_criterion: str, max_iterations, delta) -> bool:
@@ -24,4 +204,3 @@ def should_stop(iteration: int, diff: float, stop_criterion: str, max_iterations
             print(f"Total iterations: {iteration}")
             return True
     return False
-

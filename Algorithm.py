@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class Algorithm:
-    MAX_ITERATIONS = 20
-    DELTA = 0.001
+    MAX_ITERATIONS = 100
+    DELTA = 0.01
 
     def __init__(self, stop_criterion: str):
         self.stop_criterion: str = stop_criterion
