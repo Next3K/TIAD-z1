@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 class Equation(ABC):
     def __init__(self, minimum: float, maximum: float, dimensions: int):
         self.min = minimum
-        self.min = maximum
+        self.max = maximum
         self.dimensions = dimensions
 
     @abstractmethod

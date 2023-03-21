@@ -2,18 +2,23 @@ from random import uniform
 import random
 import math
 
+from StopCriterion import StopCriterion
 from Algorithm import Algorithm
-from functions import should_stop
+from functions import Equation
 
 
 class DifferentialEvolution(Algorithm):
 
-    def find_solution(self, function, min_x: float, max_x: float, min_y: float, max_y: float) -> float:
+    def find_solution(self, function: Equation) -> float:
 
-        solution = -math.inf
-        population: [[float]] = [[uniform(min_x, max_x), uniform(min_y, max_y)] for _ in range(self.pop_size)]
+        global_solution = math.inf
+        min_val = function.min
+        max_val = function.max
+        dimensions = function.dimensions
+
+        population: [[float]] = [[uniform(min_val, max_val) for _ in range(dimensions)] for _ in range(self.pop_size)]
+
         iteration = 0
-
         while True:
             mutants = []
             # mutation
@@ -23,35 +28,38 @@ class DifferentialEvolution(Algorithm):
                 mutants.append(v)
 
             # cross-over
-            d = random.randrange(len(mutants[0]))
-            end_pop = [
-                [(mutants[parent_iter][k] if uniform(0, 1) < self.CR or k == d else population[parent_iter][k]) for k in
-                 range(len(population[0]))] for parent_iter in range(len(population))]
+            genome_length = len(mutants[0])
+            d = random.randrange(genome_length)
+            end_pop = []
+            for genome_number in range(self.pop_size):
+                end_pop.append(
+                    [(mutants[genome_number][k] if uniform(0, 1) < self.CR or k == d else population[genome_number][k])
+                     for
+                     k in
+                     range(genome_length)])
 
             # get new, fitter population
-            new_population = [
-                (end_pop[i] if function(end_pop[i][0], end_pop[i][1]) > function(population[i][0], population[i][1])
-                 else population[i])
-                for i in range(len(population))]
+            new_population: [[float]] = []
+            tmp_best_solution: float = math.inf
+            for i in range(len(population)):
+                first_score = function.calculate(end_pop[i])
+                second_score = function.calculate(population[i])
+                tmp_best_solution = min(first_score, second_score, tmp_best_solution)
+                new_population.append(end_pop[i] if first_score < second_score else population[i])
 
             population = new_population
 
-            # remember current best solution
-            tmp_best_solution = max(list(map(lambda specimen: function(specimen[0], specimen[1]), population)))
-            diff = abs(tmp_best_solution - solution)
-            solution = max(tmp_best_solution, solution)
+            # update global best global_solution in this run
+            global_solution = min(tmp_best_solution, global_solution)
 
             # check stop criterion
             iteration += 1
-            if should_stop(iteration, diff, self.stop_criterion, self.MAX_ITERATIONS, self.DELTA):
+            if self.stop_criterion.should_stop(iteration=iteration, solution=global_solution):
                 break
+        return global_solution
 
-        # get best score
-        return solution
-
-    def __init__(self, stop_criterion: str, F: float = 0.5, pop_size: int = 50, CR: float = 0.5):
+    def __init__(self, stop_criterion: StopCriterion, F: float = 0.5, pop_size: int = 50, CR: float = 0.5):
         super().__init__(stop_criterion)
         self.F = F
         self.pop_size = pop_size
         self.CR = CR
-
