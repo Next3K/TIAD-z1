@@ -3,7 +3,21 @@ from DifferentialEvolution import DifferentialEvolution
 from Conductor import Conductor
 from ParticleSwarm import ParticleSwarm
 import functions
+import matplotlib.pyplot as plt
 from StopCriterion import StopCriterion
+
+
+def print_chart(data: [[float]], name: str):
+    x = [i for i in range(len(data))]
+    y = data
+    plt.xlabel("X-axis")
+    plt.ylabel("Y-axis")
+    plt.title(f"Graph for {name}")
+    for i in range(len(y[0])):
+        plt.plot(x, [pt[i] for pt in y])
+    plt.legend()
+    plt.show()
+
 
 if __name__ == '__main__':
     print('Program is starting!')
@@ -14,11 +28,11 @@ if __name__ == '__main__':
 
     # DE parameters
     f = 0.5
-    pop_size = 5 * function.dimensions
+    pop_size = 3 * function.dimensions
     cr = 0.5
 
     # PSO parameters
-    swarm_size: int = 5 * function.dimensions
+    swarm_size: int = 3 * function.dimensions
     inertion: float = 0.5
     social_constant: float = 2
     cognitive_constant: float = 1.2
@@ -45,3 +59,6 @@ if __name__ == '__main__':
         f" avg solution: {conductor_de.average_solution},"
         f" part success: {conductor_de.part_successful},"
         f" standard deviation: {conductor_de.standard_deviation}")
+
+    print_chart(conductor_pso.trace_list, "PSO")
+    print_chart(conductor_de.trace_list, "DE")

@@ -9,7 +9,7 @@ from particle import Particle
 
 class ParticleSwarm(Algorithm):
 
-    def find_solution(self, function: Equation) -> float:
+    def find_solution(self, function: Equation) -> (float, [[float]]):
         global_solution = math.inf
 
         min_val = function.min
@@ -20,18 +20,24 @@ class ParticleSwarm(Algorithm):
         particles: [Particle] = [Particle(min_val, max_val, dimensions) for _ in range(self.swarm_size)]
 
         iteration = 0
+        trace_list: [[float]] = []
         while True:
             current_best_solution = math.inf
             current_best_position = None
 
-            # set scores
+            # empty list of scores
+            current_scores_list: [float] = []
+            # calculate scores
             for particle in particles:
                 calculated_score = function.calculate(particle.position)
                 particle.update_score(calculated_score)
 
+                current_scores_list.append(calculated_score)
+
                 if calculated_score < current_best_solution:
                     current_best_solution = calculated_score
                     current_best_position = [position for position in particle.position]
+            trace_list.append(current_scores_list)
 
             # update particle velocities
             for particle in particles:
@@ -54,7 +60,7 @@ class ParticleSwarm(Algorithm):
             if self.stop_criterion.should_stop(iteration=iteration, solution=global_solution):
                 break
 
-        return global_solution
+        return global_solution, trace_list
 
     def __init__(self,
                  stop_criterion: StopCriterion,

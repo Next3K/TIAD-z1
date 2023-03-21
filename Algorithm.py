@@ -10,5 +10,5 @@ class Algorithm:
         self.stop_criterion: StopCriterion = stop_criterion
 
     @abstractmethod
-    def find_solution(self, function: Equation) -> float:
+    def find_solution(self, function: Equation) -> (float, [[float]]):
         pass

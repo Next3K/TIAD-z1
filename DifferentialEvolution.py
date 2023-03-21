@@ -8,7 +8,7 @@ from functions import Equation
 
 class DifferentialEvolution(Algorithm):
 
-    def find_solution(self, function: Equation) -> float:
+    def find_solution(self, function: Equation) -> (float, [[float]]):
 
         global_solution = math.inf
         min_val = function.min
@@ -18,6 +18,7 @@ class DifferentialEvolution(Algorithm):
         population: [[float]] = [[uniform(min_val, max_val) for _ in range(dimensions)] for _ in range(self.pop_size)]
 
         iteration = 0
+        trace_list: [[float]] = []
         while True:
             mutants = []
             # mutation
@@ -45,15 +46,24 @@ class DifferentialEvolution(Algorithm):
                      k in
                      range(genome_length)])
 
+            # empty list of scores
+            current_scores_list: [float] = []
+
             # get new, fitter population
             new_population: [[float]] = []
             tmp_best_solution: float = math.inf
             for i in range(len(population)):
                 first_score = function.calculate(end_pop[i])
                 second_score = function.calculate(population[i])
-                tmp_best_solution = min(first_score, second_score, tmp_best_solution)
+                better_score = min(first_score, second_score)
+                current_scores_list.append(better_score)
+                tmp_best_solution = min(better_score, tmp_best_solution)
                 new_population.append(end_pop[i] if first_score < second_score else population[i])
 
+            # remember all scores in this iterations
+            trace_list.append(current_scores_list)
+
+            # next generation
             population = new_population
 
             # update global best global_solution in this run
@@ -63,7 +73,7 @@ class DifferentialEvolution(Algorithm):
             iteration += 1
             if self.stop_criterion.should_stop(iteration=iteration, solution=global_solution):
                 break
-        return global_solution
+        return global_solution, trace_list
 
     def __init__(self, stop_criterion: StopCriterion, F: float = 0.5, pop_size: int = 50, CR: float = 0.5):
         super().__init__(stop_criterion)
