@@ -1,5 +1,5 @@
 class StopCriterion:
-    def __init__(self, criterion: str, delta):
+    def __init__(self, criterion: str, delta=0.01):
         self.criterion = criterion
         self.max_iterations_bound = 1000
         self.max_iterations = 200
