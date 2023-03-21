@@ -17,7 +17,7 @@ class Conductor:
             if solution is not None and solution is not -math.inf and solution is not math.inf:
                 self.solutions.append(solution)
 
-        self.best_solution = max(self.solutions)
+        self.best_solution = min(self.solutions)
         self.average_solution = mean(self.solutions)
         self.standard_deviation = stdev(self.solutions)
         self.part_successful = len(self.solutions) / number_of_runs
