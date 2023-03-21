@@ -1,7 +1,6 @@
 from random import uniform
 import random
 import math
-
 from StopCriterion import StopCriterion
 from Algorithm import Algorithm
 from functions import Equation
@@ -24,16 +23,24 @@ class DifferentialEvolution(Algorithm):
             # mutation
             for _ in population:
                 x1, x2, x3 = random.sample(population, 3)
-                v = [(x1[i] + self.F * (x2[i] - x3[i])) for i in range(len(x1))]
-                mutants.append(v)
+                mutant = []
+                for i in range(dimensions):
+                    new_value = (x1[i] + self.F * (x2[i] - x3[i]))
+                    # respect search boundaries
+                    if new_value > max_val:
+                        new_value = max_val
+                    elif new_value < min_val:
+                        new_value = min_val
+                    mutant.append(new_value)
+                mutants.append(mutant)
 
             # cross-over
             genome_length = len(mutants[0])
             d = random.randrange(genome_length)
             end_pop = []
-            for genome_number in range(self.pop_size):
+            for specimen_num in range(self.pop_size):
                 end_pop.append(
-                    [(mutants[genome_number][k] if uniform(0, 1) < self.CR or k == d else population[genome_number][k])
+                    [(mutants[specimen_num][k] if uniform(0, 1) < self.CR or k == d else population[specimen_num][k])
                      for
                      k in
                      range(genome_length)])

@@ -11,7 +11,7 @@ class ParticleSwarm(Algorithm):
 
     def find_solution(self, function: Equation) -> float:
         global_solution = math.inf
-        best_coordinates = None
+
         min_val = function.min
         max_val = function.max
         dimensions = function.dimensions
@@ -21,32 +21,33 @@ class ParticleSwarm(Algorithm):
 
         iteration = 0
         while True:
-            current_iteration_solution = global_solution
+            current_best_solution = math.inf
+            current_best_position = None
 
             # set scores
             for particle in particles:
                 calculated_score = function.calculate(particle.position)
                 particle.update_score(calculated_score)
 
-                if calculated_score > current_iteration_solution:
-                    current_iteration_solution = calculated_score
-                    best_coordinates = [particle.position[0], particle.position[1]]
+                if calculated_score < current_best_solution:
+                    current_best_solution = calculated_score
+                    current_best_position = [position for position in particle.position]
 
             # update particle velocities
             for particle in particles:
-                for dim in range(len(particle.velocity)):
+                for dim in range(dimensions):
                     inertion_component = self.inertion * particle.velocity[dim]
                     cognitive_component = self.cognitive_constant * random.uniform(0, 1) * (
                             particle.particle_best_positions[dim] - particle.position[dim])
                     social_component = self.social_constant * random.uniform(0, 1) * (
-                            best_coordinates[dim] - particle.position[dim])
+                            current_best_position[dim] - particle.position[dim])
                     particle.velocity[dim] = inertion_component + cognitive_component + social_component
 
             # update particle positions
             for particle in particles:
                 particle.update_positions()
 
-            global_solution = min(current_iteration_solution, global_solution)
+            global_solution = min(current_best_solution, global_solution)
 
             # check stop criterion
             iteration += 1

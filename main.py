@@ -8,19 +8,19 @@ from StopCriterion import StopCriterion
 if __name__ == '__main__':
     print('Program is starting!')
 
+    stop_criterion = StopCriterion("iterations")
+    function = functions.LeeYao()
+
     # DE parameters
     f = 0.5
-    pop_size = 100
+    pop_size = 5 * function.dimensions
     cr = 0.5
 
     # PSO parameters
-    swarm_size: int = 80
-    inertion: float = 0.2
-    social_constant: float = 0.45
-    cognitive_constant: float = 0.35
-
-    stop_criterion = StopCriterion("iterations")
-    function = functions.FunctionTwo()
+    swarm_size: int = 5 * function.dimensions
+    inertion: float = 0.5
+    social_constant: float = 2
+    cognitive_constant: float = 1.2
 
     algorithm_de: Algorithm = DifferentialEvolution(stop_criterion, f, pop_size, cr)
     algorithm_pso: Algorithm = ParticleSwarm(stop_criterion, swarm_size, inertion, social_constant, cognitive_constant)

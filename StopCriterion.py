@@ -18,7 +18,7 @@ class StopCriterion:
             return iteration >= self.max_iterations
         elif self.criterion == "delta":
             # first iteration
-            if iteration == 0:
+            if iteration == 1:
                 self.best_solution = solution
                 self.leader_iterations = 1
                 return False
