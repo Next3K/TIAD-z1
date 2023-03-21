@@ -31,8 +31,6 @@ if __name__ == '__main__':
                                              cognitive_constant)
 
     conductor_pso = Conductor(30, algorithm_pso, function)
-    conductor_de = Conductor(30, algorithm_de, function)
-
     print("PSO algorithm:")
     print(
         f"Best solution: {conductor_pso.best_solution},"
@@ -40,6 +38,7 @@ if __name__ == '__main__':
         f" part success: {conductor_pso.part_successful},"
         f" standard deviation: {conductor_pso.standard_deviation}")
 
+    conductor_de = Conductor(30, algorithm_de, function)
     print("DE algorithm:")
     print(
         f"Best solution: {conductor_de.best_solution},"
