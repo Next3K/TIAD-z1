@@ -10,8 +10,8 @@ from StopCriterion import StopCriterion
 def print_chart(data: [[float]], name: str):
     x = [i for i in range(len(data))]
     y = data
-    plt.xlabel("X-axis")
-    plt.ylabel("Y-axis")
+    plt.xlabel("Iterations")
+    plt.ylabel("Function value")
     plt.title(f"Graph for {name}")
     for i in range(len(y[0])):
         plt.plot(x, [pt[i] for pt in y])
