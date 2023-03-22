@@ -21,11 +21,11 @@ class Sphere(Equation):
 
         total = 0
         for i in range(self.dimensions):
-            total += x[i]**2
+            total += (x[i]**2)
 
         return total
 
-    def __init__(self, minimum: float = 100, maximum: float = 100, dimensions: int = 20, accuracy: float = 0.0001):
+    def __init__(self, minimum: float = -100, maximum: float = 100, dimensions: int = 20, accuracy: float = 0.0001):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
@@ -69,7 +69,7 @@ class Griewank(Equation):
             two *= math.cos(float(x[i]) / math.sqrt(i))
         return 1 + (float(one) / 4000.0) - float(two)
 
-    def __init__(self, minimum: float = 600, maximum: float = 600, dimensions: int = 20, accuracy: float = 0.1):
+    def __init__(self, minimum: float = -600, maximum: float = 600, dimensions: int = 20, accuracy: float = 0.1):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
