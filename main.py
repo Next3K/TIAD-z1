@@ -27,6 +27,7 @@ if __name__ == '__main__':
     # PSO parameters
     swarm_size: int = 30
     inertion: float = 0.8
+    mutation_probability: float = 0.01
     social_constant: float = 1.2
     cognitive_constant: float = 1.2
 
@@ -34,9 +35,20 @@ if __name__ == '__main__':
                                              swarm_size,
                                              inertion,
                                              social_constant,
-                                             cognitive_constant)
+                                             cognitive_constant,
+                                             False)
+
+    algorithm_gpso: Algorithm = ParticleSwarm(stop_criterion_iterations,
+                                              swarm_size,
+                                              inertion,
+                                              social_constant,
+                                              cognitive_constant,
+                                              True,
+                                              0.01)
 
     conductor_pso = Conductor(30, algorithm_pso, function)
+    conductor_gpso = Conductor(30, algorithm_gpso, function)
+
     print("PSO algorithm:")
     print(
         f"Best solution: {conductor_pso.best_solution},"
@@ -44,4 +56,12 @@ if __name__ == '__main__':
         f" part success: {conductor_pso.part_successful},"
         f" standard deviation: {conductor_pso.standard_deviation}")
 
+    print("GPSO algorithm:")
+    print(
+        f"Best solution: {conductor_gpso.best_solution},"
+        f" avg solution: {conductor_gpso.average_solution},"
+        f" part success: {conductor_gpso.part_successful},"
+        f" standard deviation: {conductor_gpso.standard_deviation}")
+
     print_chart(conductor_pso.trace_list, "PSO")
+    print_chart(conductor_gpso.trace_list, "GPSO")

@@ -40,11 +40,31 @@ def apply_pattern(particles: [Particle],
         if new_value < old_value:
             particles[i].position = pattern[i]
             particles[i].current_score = new_value
+            if particles[i].current_score < particles[i].best_score:
+                particles[i].best_score = particles[i].current_score
+                particles[i].particle_best_positions = [particles[i].position[j] for j in range(particles[i].dimension)]
 
     return particles
 
 
 class ParticleSwarm(Algorithm):
+
+    def __init__(self,
+                 stop_criterion: StopCriterion,
+                 swarm_size: int = 80,
+                 inertion: float = 0.2,
+                 social_constant: float = 0.45,
+                 cognitive_constant: float = 0.35,
+                 use_genetic: bool = False,
+                 mutation_probability: float = 0.01):
+
+        super().__init__(stop_criterion)
+        self.swarm_size = swarm_size
+        self.inertion = inertion
+        self.social_constant = social_constant
+        self.cognitive_constant = cognitive_constant
+        self.mutation_probability = mutation_probability
+        self.use_genetic = use_genetic
 
     def find_solution(self, function: Equation) -> (float, [[float]]):
         global_solution = math.inf
@@ -93,7 +113,13 @@ class ParticleSwarm(Algorithm):
             global_solution = min(current_best_solution, global_solution)
 
             # apply pattern
-            apply_pattern(particles, function, current_best_position, min_val, max_val, self.mutation_probability)
+            if self.use_genetic:
+                particles = apply_pattern(particles,
+                                          function,
+                                          current_best_position,
+                                          min_val,
+                                          max_val,
+                                          self.mutation_probability)
 
             # check stop criterion
             iteration += 1
@@ -101,18 +127,3 @@ class ParticleSwarm(Algorithm):
                 break
 
         return global_solution, trace_list
-
-    def __init__(self,
-                 stop_criterion: StopCriterion,
-                 swarm_size: int = 80,
-                 inertion: float = 0.2,
-                 mutation_probability: float = 0.01,
-                 social_constant: float = 0.45,
-                 cognitive_constant: float = 0.35):
-
-        super().__init__(stop_criterion)
-        self.swarm_size = swarm_size
-        self.inertion = inertion
-        self.social_constant = social_constant
-        self.cognitive_constant = cognitive_constant
-        self.mutation_probability = mutation_probability

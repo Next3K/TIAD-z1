@@ -11,6 +11,7 @@ class Particle:
         self.current_score = math.inf
         self.maximum = maximum
         self.minimum = minimum
+        self.dimension: int = dimension
 
     def update_score(self, new_score):
         self.current_score = new_score

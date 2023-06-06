@@ -2,7 +2,7 @@ class StopCriterion:
     def __init__(self, criterion: str, delta=0.01):
         self.criterion = criterion
         self.max_iterations_bound = 1000
-        self.max_iterations = 300
+        self.max_iterations = 120
         self.solution_delta = delta
         self.max_solution_stuck_iterations = 20
         self.best_solution = None
