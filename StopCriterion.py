@@ -27,7 +27,7 @@ class StopCriterion:
             if solution > self.best_solution:
                 diff = abs(solution - self.best_solution)
                 self.best_solution = solution
-                self.leader_iterations = self.leader_iterations + 1 if diff < delta else 1
+                self.leader_iterations = self.leader_iterations + 1 if diff < self.solution_delta else 1
             else:
                 self.leader_iterations += 1
             # check how long the best solution is stagnating

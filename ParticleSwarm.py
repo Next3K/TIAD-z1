@@ -7,6 +7,43 @@ from functions import Equation
 from particle import Particle
 
 
+def apply_pattern(particles: [Particle],
+                  function: Equation,
+                  global_best_position: [float],
+                  maximum: float,
+                  minimum: float,
+                  mutation_probability=0.01) -> [Particle]:
+    pattern: [[float]] = []
+    for particle in particles:
+        positions = []
+        random_particle: Particle = random.choice(particles)
+        for i in range(len(particle.position)):
+            if function.calculate(particle.particle_best_positions) < function.calculate(
+                    random_particle.particle_best_positions):
+                rd = random.uniform(0, 1)
+                positions.append(
+                    rd * particle.particle_best_positions[i] + (1 - rd) * global_best_position[i])
+            else:
+                positions.append(random_particle.particle_best_positions[i])
+        pattern.append(positions)
+
+    # mutation
+    for sub_pattern in pattern:
+        for i in range(len(sub_pattern)):
+            if random.uniform(0, 1) < mutation_probability:
+                sub_pattern[i] = random.uniform(minimum, maximum)
+
+    # choice
+    for i in range(len(particles)):
+        old_value = particles[i].current_score
+        new_value = function.calculate(pattern[i])
+        if new_value < old_value:
+            particles[i].position = pattern[i]
+            particles[i].current_score = new_value
+
+    return particles
+
+
 class ParticleSwarm(Algorithm):
 
     def find_solution(self, function: Equation) -> (float, [[float]]):
@@ -55,6 +92,9 @@ class ParticleSwarm(Algorithm):
 
             global_solution = min(current_best_solution, global_solution)
 
+            # apply pattern
+            apply_pattern(particles, function, current_best_position, min_val, max_val, self.mutation_probability)
+
             # check stop criterion
             iteration += 1
             if self.stop_criterion.should_stop(iteration=iteration, solution=global_solution):
@@ -66,6 +106,7 @@ class ParticleSwarm(Algorithm):
                  stop_criterion: StopCriterion,
                  swarm_size: int = 80,
                  inertion: float = 0.2,
+                 mutation_probability: float = 0.01,
                  social_constant: float = 0.45,
                  cognitive_constant: float = 0.35):
 
@@ -74,3 +115,4 @@ class ParticleSwarm(Algorithm):
         self.inertion = inertion
         self.social_constant = social_constant
         self.cognitive_constant = cognitive_constant
+        self.mutation_probability = mutation_probability
