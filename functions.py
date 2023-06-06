@@ -25,7 +25,7 @@ class Sphere(Equation):
 
         return total
 
-    def __init__(self, minimum: float = -100, maximum: float = 100, dimensions: int = 20, accuracy: float = 0.0001):
+    def __init__(self, dimensions: int = 20, minimum: float = -100, maximum: float = 100, accuracy: float = 0.0001):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
@@ -39,7 +39,7 @@ class FunctionTwo(Equation):
             total += (x[i] - i)**2
         return total
 
-    def __init__(self, minimum: float = -100, maximum: float = 100, dimensions: int = 20, accuracy: float = 0.0001):
+    def __init__(self, dimensions: int = 20, minimum: float = -100, maximum: float = 100, accuracy: float = 0.0001):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
@@ -53,7 +53,7 @@ class Rosenbrock(Equation):
             total += (100 * (x[i + 1] - x[i] ** 2) ** 2 + (x[i] - 1) ** 2)
         return total
 
-    def __init__(self, minimum: float = -2.048, maximum: float = 2.048, dimensions: int = 20, accuracy: float = 30):
+    def __init__(self, dimensions: int = 20, minimum: float = -2.048, maximum: float = 2.048,  accuracy: float = 30):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
@@ -69,7 +69,7 @@ class Griewank(Equation):
             two *= math.cos(float(x[i]) / math.sqrt(i))
         return 1 + (float(one) / 4000.0) - float(two)
 
-    def __init__(self, minimum: float = -600, maximum: float = 600, dimensions: int = 20, accuracy: float = 0.1):
+    def __init__(self, dimensions: int = 20, minimum: float = -600, maximum: float = 600,  accuracy: float = 0.1):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
@@ -83,7 +83,7 @@ class Rastrigin(Equation):
             total += (x[i] ** 2 - 10 * math.cos(2 * math.pi * x[i]) + 10)
         return total
 
-    def __init__(self, minimum: float = -5.12, maximum: float = 5.12, dimensions: int = 20, accuracy: float = 30):
+    def __init__(self, dimensions: int = 20, minimum: float = -5.12, maximum: float = 5.12, accuracy: float = 30):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
@@ -100,7 +100,7 @@ class Ackley(Equation):
             two += (math.cos(2 * math.pi * x[i]))
         return -20 * math.exp(-0.2 * math.sqrt(one / n)) - math.exp(two / n) + 20 + math.e
 
-    def __init__(self, minimum: float = -32, maximum: float = 32, dimensions: int = 20, accuracy: float = 0.0001):
+    def __init__(self, dimensions: int = 20, minimum: float = -32, maximum: float = 32, accuracy: float = 0.0001):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
@@ -110,7 +110,7 @@ class Easom(Equation):
             raise ValueError(f"Expected {self.dimensions} elements, got: {len(x)}")
         return -math.cos(x[0]) * math.cos(x[1]) * math.exp(-(x[0] - math.pi)**2 - (x[1] - math.pi)**2)
 
-    def __init__(self, minimum: float = -10, maximum: float = 10, dimensions: int = 2, accuracy: float = 0.000001):
+    def __init__(self, dimensions: int = 2, minimum: float = -10, maximum: float = 10, accuracy: float = 0.000001):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
@@ -124,7 +124,7 @@ class Brown(Equation):
             total += math.pow(x[i] ** 2, x[i + 1] ** 2 + 1) + math.pow(x[i + 1] ** 2, x[i] ** 2 + 1)
         return total
 
-    def __init__(self, minimum: float = -1, maximum: float = 4, dimensions: int = 20, accuracy: float = 0.001):
+    def __init__(self, dimensions: int = 20, minimum: float = -1, maximum: float = 4, accuracy: float = 0.001):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
@@ -141,7 +141,7 @@ class Schwefel(Equation):
             two *= abs(x[i])
         return one + two
 
-    def __init__(self, minimum: float = -10, maximum: float = 10, dimensions: int = 20, accuracy: float = 0.000001):
+    def __init__(self, dimensions: int = 20, minimum: float = -10, maximum: float = 10, accuracy: float = 0.000001):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 
@@ -158,7 +158,7 @@ class Zakharov(Equation):
             two += i * x[i] / 2
         return -one + math.pow(two, 2) + math.pow(two, 4)
 
-    def __init__(self, minimum: float = -10, maximum: float = 10, dimensions: int = 20, accuracy: float = 0.001):
+    def __init__(self, dimensions: int = 20, minimum: float = -10, maximum: float = 10, accuracy: float = 0.001):
         super().__init__(minimum=minimum, maximum=maximum, dimensions=dimensions, accuracy=accuracy)
 
 

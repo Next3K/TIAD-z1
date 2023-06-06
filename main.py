@@ -20,7 +20,9 @@ def print_chart(data: [[float]], name: str):
 if __name__ == '__main__':
     print('Program is starting!')
 
-    function = functions.Sphere()
+    # function
+    function = functions.Sphere(dimensions=20)
+
     stop_criterion_iterations = StopCriterion("iterations")
     stop_criterion_delta = StopCriterion("iterations", delta=function.accuracy)
 
@@ -31,6 +33,7 @@ if __name__ == '__main__':
     social_constant: float = 1.2
     cognitive_constant: float = 1.2
 
+    # standard PSO
     algorithm_pso: Algorithm = ParticleSwarm(stop_criterion_iterations,
                                              swarm_size,
                                              inertion,
@@ -38,6 +41,7 @@ if __name__ == '__main__':
                                              cognitive_constant,
                                              False)
 
+    # standard PSO with genetic function
     algorithm_gpso: Algorithm = ParticleSwarm(stop_criterion_iterations,
                                               swarm_size,
                                               inertion,
@@ -55,6 +59,7 @@ if __name__ == '__main__':
         f" avg solution: {conductor_pso.average_solution},"
         f" part success: {conductor_pso.part_successful},"
         f" standard deviation: {conductor_pso.standard_deviation}")
+    print_chart(conductor_pso.trace_list, "PSO")
 
     print("GPSO algorithm:")
     print(
@@ -62,6 +67,4 @@ if __name__ == '__main__':
         f" avg solution: {conductor_gpso.average_solution},"
         f" part success: {conductor_gpso.part_successful},"
         f" standard deviation: {conductor_gpso.standard_deviation}")
-
-    print_chart(conductor_pso.trace_list, "PSO")
     print_chart(conductor_gpso.trace_list, "GPSO")
