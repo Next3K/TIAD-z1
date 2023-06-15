@@ -17,36 +17,39 @@ class WolfPack(Algorithm):
         self.a = 2.0
 
     def find_solution(self, function: Equation) -> (float, [[float]]):
-        global_solution = math.inf
+        a = self.a
+        global_solution: float = math.inf
         min_val = function.min
         max_val = function.max
         dimensions = function.dimensions
 
         # pack initialization
         wolf_pack: [Wolf] = [Wolf(min_val, max_val, dimensions) for _ in range(self.num_population)]
-        wolf_pack = self.sort_pack(wolf_pack=wolf_pack)
+        wolf_pack = self.sort_pack(wolf_pack=wolf_pack, function=function)
 
-        xa: Wolf = wolf_pack[0]
-        xb: Wolf = wolf_pack[1]
-        xc: Wolf = wolf_pack[2]
+        xa: [Wolf] = wolf_pack[0]
+        xb: [Wolf] = wolf_pack[1]
+        xc: [Wolf] = wolf_pack[2]
 
         iteration: int = 0
         while iteration <= self.stop_criterion.max_iterations:
+            r1 = random.uniform(0, 1)
+            r2 = random.uniform(0, 1)
             for i in range(len(wolf_pack)):
                 wolf = wolf_pack[i]
-                A = self.a * (2 * random.uniform(0, 1) - 1)
-                C = 2 * random.uniform(0, 1)
+                self.A = a * (2 * r1 - 1)
+                self.C = 2 * r2
 
-                d_alfa: [float] = [x - y for x, y in zip([C * xa.position[i] for i in range(dimensions)],
+                d_alfa: [float] = [x - y for x, y in zip([xa.C * xa.positions[i] for i in range(dimensions)],
                                                          wolf.position)]
-                d_beta: [float] = [x - y for x, y in zip([C * xb.position[i] for i in range(dimensions)],
+                d_beta: [float] = [x - y for x, y in zip([xb.C * xb.positions[i] for i in range(dimensions)],
                                                          wolf.position)]
-                d_gamma: [float] = [x - y for x, y in zip([C * xc.position[i] for i in range(dimensions)],
+                d_gamma: [float] = [x - y for x, y in zip([xc.C * xc.positions[i] for i in range(dimensions)],
                                                           wolf.position)]
 
-                x_alfa: [float] = [x - y for x, y in zip(xa.position, [A * d_alfa[i] for i in range(dimensions)])]
-                x_beta: [float] = [x - y for x, y in zip(xb.position, [A * d_beta[i] for i in range(dimensions)])]
-                x_gamma: [float] = [x - y for x, y in zip(xc.position, [A * d_gamma[i] for i in range(dimensions)])]
+                x_alfa: [float] = [x - y for x, y in zip(xa, [xa.A * d_alfa[i] for i in range(dimensions)])]
+                x_beta: [float] = [x - y for x, y in zip(xb, [xb.A * d_beta[i] for i in range(dimensions)])]
+                x_gamma: [float] = [x - y for x, y in zip(xc, [xc.A * d_gamma[i] for i in range(dimensions)])]
 
                 x_k = [(a + b + c) / 3 for a, b, c in zip(x_alfa, x_beta, x_gamma)]
                 wolf.update_positions(x_k)
@@ -59,8 +62,13 @@ class WolfPack(Algorithm):
                 elif xb.current_score < wolf.current_score < xc.current_score:
                     xc = wolf
 
-            self.a = 2.0 - (2.0 * (iteration / self.stop_criterion.max_iterations))
+                if wolf.current_score < global_solution:
+                    global_solution = wolf.current_score
+
+            a = 2.0 - (2.0 * (iteration / self.stop_criterion.max_iterations))
             iteration += 1
+
+        return global_solution, None
 
     def sort_pack(self, wolf_pack: [Wolf], function: Equation):
         for wolf in wolf_pack:
