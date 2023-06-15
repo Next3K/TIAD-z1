@@ -37,8 +37,9 @@ class WolfPack(Algorithm):
             r2 = random.uniform(0, 1)
             for i in range(len(wolf_pack)):
                 wolf = wolf_pack[i]
-                self.A = a * (2 * r1 - 1)
-                self.C = 2 * r2
+
+                wolf.A = a * (2 * r1 - 1)
+                wolf.C = 2 * r2
 
                 d_alfa: [float] = [x - y for x, y in zip([xa.C * xa.positions[i] for i in range(dimensions)],
                                                          wolf.position)]
