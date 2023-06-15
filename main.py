@@ -4,6 +4,7 @@ from ParticleSwarm import ParticleSwarm
 import functions
 import matplotlib.pyplot as plt
 from StopCriterion import StopCriterion
+from WolfPack import WolfPack
 
 
 def print_chart(data: [[float]], name: str):
@@ -21,7 +22,7 @@ if __name__ == '__main__':
     print('Program is starting!')
 
     # function
-    function = functions.Sphere(dimensions=20)
+    function = functions.Ackley(dimensions=20)
 
     stop_criterion_iterations = StopCriterion("iterations")
     stop_criterion_delta = StopCriterion("iterations", delta=function.accuracy)
@@ -33,15 +34,6 @@ if __name__ == '__main__':
     social_constant: float = 1.2
     cognitive_constant: float = 1.2
 
-    # standard PSO
-    algorithm_pso: Algorithm = ParticleSwarm(stop_criterion_iterations,
-                                             swarm_size,
-                                             inertion,
-                                             social_constant,
-                                             cognitive_constant,
-                                             False)
-
-    # standard PSO with genetic function
     algorithm_gpso: Algorithm = ParticleSwarm(stop_criterion_iterations,
                                               swarm_size,
                                               inertion,
@@ -50,16 +42,18 @@ if __name__ == '__main__':
                                               True,
                                               0.01)
 
-    conductor_pso = Conductor(30, algorithm_pso, function)
+    algorithm_gwo: Algorithm = WolfPack(stop_criterion_iterations, swarm_size)
+                                            
+    conductor_gwo = Conductor(30, algorithm_gwo, function)
     conductor_gpso = Conductor(30, algorithm_gpso, function)
-
-    print("PSO algorithm:")
+    
+    print("GWO algorithm:")
     print(
-        f"Best solution: {conductor_pso.best_solution},"
-        f" avg solution: {conductor_pso.average_solution},"
-        f" part success: {conductor_pso.part_successful},"
-        f" standard deviation: {conductor_pso.standard_deviation}")
-    print_chart(conductor_pso.trace_list, "PSO")
+        f"Best solution: {conductor_gwo.best_solution},"
+        f" avg solution: {conductor_gwo.average_solution},"
+        f" part success: {conductor_gwo.part_successful},"
+        f" standard deviation: {conductor_gwo.standard_deviation}")
+    print_chart(conductor_gwo.trace_list, "GWO")
 
     print("GPSO algorithm:")
     print(

@@ -5,6 +5,7 @@ from Algorithm import Algorithm
 from StopCriterion import StopCriterion
 from Wolf import Wolf
 from functions import Equation
+import copy 
 
 
 class WolfPack(Algorithm):
@@ -27,49 +28,60 @@ class WolfPack(Algorithm):
         wolf_pack: [Wolf] = [Wolf(min_val, max_val, dimensions) for _ in range(self.num_population)]
         wolf_pack = self.sort_pack(wolf_pack=wolf_pack, function=function)
 
-        xa: [Wolf] = wolf_pack[0]
-        xb: [Wolf] = wolf_pack[1]
-        xc: [Wolf] = wolf_pack[2]
-
+        trace_list: [[float]] = []
         iteration: int = 0
+
+        wolf_pack = sorted(wolf_pack, key = lambda temp: temp.current_score)
+        alpha_wolf, beta_wolf, gamma_wolf = copy.copy(wolf_pack[: 3])
+
         while iteration <= self.stop_criterion.max_iterations:
-            r1 = random.uniform(0, 1)
-            r2 = random.uniform(0, 1)
+
+            a = 2 * (1 - iteration/self.stop_criterion.max_iterations)
+
             for i in range(len(wolf_pack)):
-                wolf = wolf_pack[i]
 
-                wolf.A = a * (2 * r1 - 1)
-                wolf.C = 2 * r2
+                A1, A2, A3 = a * (2 * random.randint(0, 1) - 1), a * (2 * random.randint(0, 1) - 1), a * (2 * random.randint(0, 1) - 1)
+                C1, C2, C3 = 2 * random.randint(0, 1), 2*random.randint(0, 1), 2*random.randint(0, 1)
+                X_alfa = []
+                X_beta = []
+                X_gamma = []
+                X_wolf = []
 
-                d_alfa: [float] = [x - y for x, y in zip([xa.C * xa.positions[i] for i in range(dimensions)],
-                                                         wolf.position)]
-                d_beta: [float] = [x - y for x, y in zip([xb.C * xb.positions[i] for i in range(dimensions)],
-                                                         wolf.position)]
-                d_gamma: [float] = [x - y for x, y in zip([xc.C * xc.positions[i] for i in range(dimensions)],
-                                                          wolf.position)]
+                for j in range(dimensions):
+                    X_alfa.append(0.0)
+                    X_beta.append(0.0)
+                    X_gamma.append(0.0)
+                    X_wolf.append(0.0)
 
-                x_alfa: [float] = [x - y for x, y in zip(xa, [xa.A * d_alfa[i] for i in range(dimensions)])]
-                x_beta: [float] = [x - y for x, y in zip(xb, [xb.A * d_beta[i] for i in range(dimensions)])]
-                x_gamma: [float] = [x - y for x, y in zip(xc, [xc.A * d_gamma[i] for i in range(dimensions)])]
+                for j in range(dimensions):
+                    X_alfa[j] = alpha_wolf.position[j] - A1 * abs(C1 * alpha_wolf.position[j] - wolf_pack[i].position[j])
+                    X_beta[j] = beta_wolf.position[j] - A2 * abs(C2 *  beta_wolf.position[j] - wolf_pack[i].position[j])
+                    X_gamma[j] = gamma_wolf.position[j] - A3 * abs(C3 * gamma_wolf.position[j] - wolf_pack[i].position[j])
+                    X_wolf[j]+= X_alfa[j] + X_beta[j] + X_gamma[j]
+             
+                for j in range(dimensions):
+                    X_wolf[j]/=3.0
 
-                x_k = [(a + b + c) / 3 for a, b, c in zip(x_alfa, x_beta, x_gamma)]
-                wolf.update_positions(x_k)
-                wolf.update_score(function.calculate(x_k))
+                F_wolf = function.calculate(X_wolf)
 
-                if wolf.current_score < xa.current_score:
-                    xa = wolf
-                elif xa.current_score < wolf.current_score < xb.current_score:
-                    xb = wolf
-                elif xb.current_score < wolf.current_score < xc.current_score:
-                    xc = wolf
+                if F_wolf < wolf_pack[i].current_score:
+                    wolf_pack[i].position = X_wolf
+                    wolf_pack[i].current_score = F_wolf
+                
+                if wolf_pack[i].current_score < global_solution:
+                    global_solution = wolf_pack[i].current_score
 
-                if wolf.current_score < global_solution:
-                    global_solution = wolf.current_score
+            wolf_pack = sorted(wolf_pack, key = lambda temp: temp.current_score)
+            alpha_wolf, beta_wolf, gamma_wolf = copy.copy(wolf_pack[: 3])
 
-            a = 2.0 - (2.0 * (iteration / self.stop_criterion.max_iterations))
             iteration += 1
 
-        return global_solution, None
+            wolf_score = [wolf.current_score for wolf in wolf_pack]
+            trace_list.append(wolf_score)
+
+        return global_solution, trace_list
+
+
 
     def sort_pack(self, wolf_pack: [Wolf], function: Equation):
         for wolf in wolf_pack:

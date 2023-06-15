@@ -20,7 +20,7 @@ class Conductor:
                 if solution < self.best_solution:
                     self.best_solution = solution
                     self.trace_list = trace_list
-
+        
         self.average_solution = mean(self.solutions)
         self.standard_deviation = stdev(self.solutions)
         self.part_successful = len(self.solutions) / number_of_runs
