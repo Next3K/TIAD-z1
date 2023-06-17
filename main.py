@@ -42,18 +42,18 @@ if __name__ == '__main__':
                                               True,
                                               0.01)
 
-    algorithm_gwo: Algorithm = WolfPack(stop_criterion_iterations, swarm_size)
+    algorithm_wolf: Algorithm = WolfPack(stop_criterion_iterations, swarm_size)
                                             
-    conductor_gwo = Conductor(30, algorithm_gwo, function)
+    conductor_wolf = Conductor(30, algorithm_wolf, function)
     conductor_gpso = Conductor(30, algorithm_gpso, function)
     
-    print("GWO algorithm:")
+    print("Wolf algorithm:")
     print(
-        f"Best solution: {conductor_gwo.best_solution},"
-        f" avg solution: {conductor_gwo.average_solution},"
-        f" part success: {conductor_gwo.part_successful},"
-        f" standard deviation: {conductor_gwo.standard_deviation}")
-    print_chart(conductor_gwo.trace_list, "GWO")
+        f"Best solution: {conductor_wolf.best_solution},"
+        f" avg solution: {conductor_wolf.average_solution},"
+        f" part success: {conductor_wolf.part_successful},"
+        f" standard deviation: {conductor_wolf.standard_deviation}")
+    print_chart(conductor_wolf.trace_list, "GWO")
 
     print("GPSO algorithm:")
     print(

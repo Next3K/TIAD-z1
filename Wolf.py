@@ -9,8 +9,6 @@ class Wolf:
         self.A = 2.0 * (2.0 * random.uniform(0, 1) - 1)
         self.C = random.uniform(0, 1)
 
-    def update_score(self, new_score):
+    def update(self, new_score, position):
         self.current_score = new_score
-
-    def update_positions(self, position):
         self.position = position
