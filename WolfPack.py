@@ -9,7 +9,7 @@ import copy
 
 
 class WolfPack(Algorithm):
-    def __init__(self, stop_criterion: StopCriterion, num_population: int, mutation_probability: float):
+    def __init__(self, stop_criterion: StopCriterion, num_population: int, mutation_probability: float = 0.02):
         super().__init__(stop_criterion)
         self.stop_criterion: StopCriterion = stop_criterion
 

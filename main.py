@@ -28,24 +28,26 @@ if __name__ == '__main__':
     stop_criterion_delta = StopCriterion("iterations", delta=function.accuracy)
 
     # PSO parameters
-    swarm_size: int = 30
+    population: int = 30
     inertion: float = 0.8
     mutation_probability: float = 0.01
     social_constant: float = 1.2
     cognitive_constant: float = 1.2
 
     algorithm_gpso: Algorithm = ParticleSwarm(stop_criterion_iterations,
-                                              swarm_size,
+                                              population,
                                               inertion,
                                               social_constant,
                                               cognitive_constant,
                                               True,
                                               0.01)
 
-    algorithm_wolf: Algorithm = WolfPack(stop_criterion_iterations, swarm_size)
+    algorithm_wolf: Algorithm = WolfPack(stop_criterion_iterations,
+                                         population,
+                                         mutation_probability=0.02)
                                             
     conductor_wolf = Conductor(30, algorithm_wolf, function)
-    conductor_gpso = Conductor(30, algorithm_gpso, function)
+    conductor_pso = Conductor(30, algorithm_gpso, function)
     
     print("Wolf algorithm:")
     print(
@@ -55,10 +57,10 @@ if __name__ == '__main__':
         f" standard deviation: {conductor_wolf.standard_deviation}")
     print_chart(conductor_wolf.trace_list, "GWO")
 
-    print("GPSO algorithm:")
+    print("PSO algorithm:")
     print(
-        f"Best solution: {conductor_gpso.best_solution},"
-        f" avg solution: {conductor_gpso.average_solution},"
-        f" part success: {conductor_gpso.part_successful},"
-        f" standard deviation: {conductor_gpso.standard_deviation}")
-    print_chart(conductor_gpso.trace_list, "GPSO")
+        f"Best solution: {conductor_pso.best_solution},"
+        f" avg solution: {conductor_pso.average_solution},"
+        f" part success: {conductor_pso.part_successful},"
+        f" standard deviation: {conductor_pso.standard_deviation}")
+    print_chart(conductor_pso.trace_list, "PSO")
