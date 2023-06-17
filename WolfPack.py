@@ -9,13 +9,15 @@ import copy
 
 
 class WolfPack(Algorithm):
-    def __init__(self, stop_criterion: StopCriterion, num_population: int):
+    def __init__(self, stop_criterion: StopCriterion, num_population: int, mutation_probability: float):
         super().__init__(stop_criterion)
         self.stop_criterion: StopCriterion = stop_criterion
 
         # algo specific args
         self.num_population: int = num_population
         self.a = 2.0
+        assert 0 < mutation_probability < 1
+        self.MUTATION_PROBABILITY = mutation_probability
 
     def find_solution(self, function: Equation) -> (float, [[float]]):
         a = self.a
@@ -33,19 +35,42 @@ class WolfPack(Algorithm):
         trace_list: [[float]] = []
         iteration: int = 0
 
+        # sort wolf pack according to the scores
         wolf_pack = sorted(wolf_pack, key=lambda temp: temp.current_score)
         alpha_wolf, beta_wolf, gamma_wolf = copy.copy(wolf_pack[: 3])
 
         while iteration <= self.stop_criterion.max_iterations:
 
-            # calculate pattern
-
-            # perform mutation
-
             a = 2 * (1 - iteration / self.stop_criterion.max_iterations)
 
+            # patterns for wolves START computation
+            patterns: [[float]] = []
             for i in range(len(wolf_pack)):
+                # calculate pattern for given wolf
+                pattern: [float] = [(random.choice([alpha_wolf, beta_wolf, gamma_wolf]).position[k] +
+                                     wolf_pack[i].position[k]) * 0.5
+                                    for k in range(dimensions)]
 
+                # perform mutation
+                pattern = [random.uniform(min_val, max_val)
+                           if random.uniform(0, 1) < self.MUTATION_PROBABILITY else pattern[k]
+                           for k in range(dimensions)]
+
+                pattern.append(pattern)
+
+            for i in range(len(wolf_pack)):
+                current_pattern = patterns[i]
+                pattern_eval = function.calculate(current_pattern)
+                wolf_eval = wolf_pack[i].current_score
+                if pattern_eval < wolf_eval:
+                    wolf_pack[i].update(pattern_eval, current_pattern)
+
+            # sort wolf pack according to the scores
+            wolf_pack = sorted(wolf_pack, key=lambda temp: temp.current_score)
+            alpha_wolf, beta_wolf, gamma_wolf = copy.copy(wolf_pack[: 3])
+            # patterns for wolves END computation
+
+            for i in range(len(wolf_pack)):
                 A1, A2, A3 = a * (2 * random.randint(0, 1) - 1), a * (2 * random.randint(0, 1) - 1), a * (
                         2 * random.randint(0, 1) - 1)
                 C1, C2, C3 = 2 * random.randint(0, 1), 2 * random.randint(0, 1), 2 * random.randint(0, 1)
