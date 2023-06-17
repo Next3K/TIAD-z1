@@ -55,7 +55,7 @@ if __name__ == '__main__':
         f" avg solution: {conductor_wolf.average_solution},"
         f" part success: {conductor_wolf.part_successful},"
         f" standard deviation: {conductor_wolf.standard_deviation}")
-    print_chart(conductor_wolf.trace_list, "GWO")
+    print_chart(conductor_wolf.trace_list, "Wolf pack")
 
     print("PSO algorithm:")
     print(

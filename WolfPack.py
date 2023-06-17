@@ -56,7 +56,7 @@ class WolfPack(Algorithm):
                            if random.uniform(0, 1) < self.MUTATION_PROBABILITY else pattern[k]
                            for k in range(dimensions)]
 
-                pattern.append(pattern)
+                patterns.append(pattern)
 
             for i in range(len(wolf_pack)):
                 current_pattern = patterns[i]
